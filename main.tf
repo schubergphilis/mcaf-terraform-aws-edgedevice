@@ -1,8 +1,8 @@
 data "aws_iam_policy_document" "default" {
   version = "2012-10-17"
   statement {
-    effect    = "Allow"
-    actions   = [
+    effect = "Allow"
+    actions = [
       "iot:*"
     ]
     resources = [

@@ -7,6 +7,7 @@ output "aws_iot_certificate_arn" {
   value       = aws_iot_certificate.default.arn
   description = "ARN of the certificate"
 }
+
 output "aws_iot_policy_name" {
   value       = aws_iot_policy.default.name
   description = "Name of the policy"
