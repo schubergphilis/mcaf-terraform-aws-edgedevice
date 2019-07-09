@@ -1,7 +1,3 @@
-locals {
-  name = "${var.stack}-${var.name}"
-}
-
 data "aws_iam_policy_document" "default" {
   version = "2012-10-17"
   statement {
@@ -16,12 +12,12 @@ data "aws_iam_policy_document" "default" {
 }
 
 resource "aws_iot_policy" "default" {
-  name   = "${local.name}-IoTCoreFullAccess"
+  name   = "IoTCoreFullAccess-${var.name}"
   policy = data.aws_iam_policy_document.default.json
 }
 
 resource "aws_iot_thing" "default" {
-  name = local.name
+  name = var.name
 }
 
 resource "aws_iot_certificate" "default" {
@@ -39,7 +35,7 @@ resource "aws_iot_thing_principal_attachment" "default" {
 }
 
 resource "aws_ssm_parameter" "certificate_pem" {
-  name   = "/${local.name}/iot/certificate-pem"
+  name   = "/${var.name}/iot/certificate-pem"
   type   = "SecureString"
   value  = aws_iot_certificate.default.certificate_pem
   key_id = var.kms_key_id
@@ -47,7 +43,7 @@ resource "aws_ssm_parameter" "certificate_pem" {
 }
 
 resource "aws_ssm_parameter" "public_key" {
-  name   = "/${local.name}/iot/public-key"
+  name   = "/${var.name}/iot/public-key"
   type   = "SecureString"
   value  = aws_iot_certificate.default.public_key
   key_id = var.kms_key_id
@@ -55,7 +51,7 @@ resource "aws_ssm_parameter" "public_key" {
 }
 
 resource "aws_ssm_parameter" "private_key" {
-  name   = "/${local.name}/iot/private-key"
+  name   = "/${var.name}/iot/private-key"
   type   = "SecureString"
   value  = aws_iot_certificate.default.private_key
   key_id = var.kms_key_id

@@ -26,3 +26,18 @@ output "aws_iot_thing_arn" {
   value       = aws_iot_thing.default.arn
   description = "ARN of the thing"
 }
+
+output "aws_ssm_parameter_iot_certificate_certificate_pem" {
+  value       = aws_ssm_parameter.certificate_pem.name
+  description = "Path of the SSM Parameter for IoT certificate pem"
+}
+
+output "aws_ssm_parameter_iot_certificate_public_key" {
+  value       = aws_ssm_parameter.public_key.name
+  description = "Path of the SSM Parameter for IoT certificate public key"
+}
+
+output "aws_ssm_parameter_iot_certificate_private_key" {
+  value       = aws_ssm_parameter.private_key.name
+  description = "Path of the SSM Parameter for IoT certificate private key"
+}
