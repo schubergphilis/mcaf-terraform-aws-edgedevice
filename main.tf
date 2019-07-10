@@ -34,11 +34,18 @@ resource "aws_iot_thing_principal_attachment" "default" {
   thing     = aws_iot_thing.default.name
 }
 
+module "edgedevice_kms_key" {
+  source      = "github.com/schubergphilis/mcaf-terraform-aws-kms?ref=v0.1.3"
+  name        = var.name
+  description = "KMS key used for encrypting SSM Parameters for edge devices"
+  tags        = var.tags
+}
+
 resource "aws_ssm_parameter" "certificate_pem" {
   name   = "/${var.name}/iot/certificate-pem"
   type   = "SecureString"
   value  = aws_iot_certificate.default.certificate_pem
-  key_id = var.kms_key_id
+  key_id = module.edgedevice_kms_key.id
   tags   = var.tags
 }
 
@@ -46,7 +53,7 @@ resource "aws_ssm_parameter" "public_key" {
   name   = "/${var.name}/iot/public-key"
   type   = "SecureString"
   value  = aws_iot_certificate.default.public_key
-  key_id = var.kms_key_id
+  key_id = module.edgedevice_kms_key.id
   tags   = var.tags
 }
 
@@ -54,6 +61,6 @@ resource "aws_ssm_parameter" "private_key" {
   name   = "/${var.name}/iot/private-key"
   type   = "SecureString"
   value  = aws_iot_certificate.default.private_key
-  key_id = var.kms_key_id
+  key_id = module.edgedevice_kms_key.id
   tags   = var.tags
 }
