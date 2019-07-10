@@ -64,3 +64,42 @@ resource "aws_ssm_parameter" "private_key" {
   key_id = module.edgedevice_kms_key.id
   tags   = var.tags
 }
+
+data "aws_iam_policy_document" "ssm_activation" {
+  statement {
+    actions = [
+      "sts:AssumeRole"
+    ]
+    principals {
+      type        = "Service"
+      identifiers = ["ssm.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "ssm_activation" {
+  name               = "SSMActivation-${var.name}"
+  assume_role_policy = data.aws_iam_policy_document.ssm_activation.json
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_activation" {
+  role       = "${aws_iam_role.ssm_activation.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+}
+
+resource "aws_ssm_activation" "default" {
+  name               = var.name
+  description        = "SSM Activation for ${var.name}"
+  iam_role           = "${aws_iam_role.ssm_activation.id}"
+  registration_limit = 1
+  depends_on         = ["aws_iam_role_policy_attachment.ssm_activation"]
+}
+
+
+resource "aws_ssm_parameter" "ssm_activation" {
+  name   = "/${var.name}/iot/ssm-activation"
+  type   = "SecureString"
+  value  = aws_ssm_activation.default.activation_code
+  key_id = module.edgedevice_kms_key.id
+  tags   = var.tags
+}
