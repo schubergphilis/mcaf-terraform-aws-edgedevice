@@ -1,1 +1,1 @@
-# mcaf-terraform-aws-edgedevice
+# terraform-aws-mcaf-edgedevice

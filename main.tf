@@ -35,7 +35,7 @@ resource "aws_iot_thing_principal_attachment" "default" {
 }
 
 module "edgedevice_kms_key" {
-  source      = "github.com/schubergphilis/mcaf-terraform-aws-kms?ref=v0.1.3"
+  source      = "github.com/schubergphilis/terraform-aws-mcaf-kms?ref=v0.1.3"
   name        = var.name
   description = "KMS key used for encrypting SSM Parameters for edge devices"
   tags        = var.tags
