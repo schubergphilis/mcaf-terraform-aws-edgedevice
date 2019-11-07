@@ -1,7 +1,3 @@
-locals {
-  expiration_date = timeadd(timestamp(), var.expiration_duration)
-}
-
 data "aws_iam_policy_document" "default" {
   version = "2012-10-17"
   statement {
@@ -95,7 +91,7 @@ resource "aws_ssm_activation" "default" {
   name               = var.name
   description        = "SSM Activation for ${var.name}"
   iam_role           = "${aws_iam_role.ssm_activation.id}"
-  expiration_date    = local.expiration_date
+  expiration_date    = timeadd(timestamp(), var.expiration_duration)
   registration_limit = 1
   depends_on         = ["aws_iam_role_policy_attachment.ssm_activation"]
 
