@@ -5,8 +5,8 @@ variable "name" {
 
 variable "expiration_duration" {
   type        = string
-  default     = "24h"
-  description = "The expiration period of the SSM activation"
+  default     = "672h"
+  description = "The expiration period of the SSM activation, default 4 weeks"
 }
 
 variable "tags" {
