@@ -83,17 +83,18 @@ resource "aws_iam_role" "ssm_activation" {
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_activation" {
-  role       = "${aws_iam_role.ssm_activation.name}"
+  role       = aws_iam_role.ssm_activation.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
 }
 
 resource "aws_ssm_activation" "default" {
   name               = var.name
   description        = "SSM Activation for ${var.name}"
-  iam_role           = "${aws_iam_role.ssm_activation.id}"
+  iam_role           = aws_iam_role.ssm_activation.id
   expiration_date    = timeadd(timestamp(), var.expiration_duration)
   registration_limit = 1
-  depends_on         = ["aws_iam_role_policy_attachment.ssm_activation"]
+  depends_on         = [aws_iam_role_policy_attachment.ssm_activation]
+  tags               = var.tags
 
   lifecycle {
     ignore_changes = [
