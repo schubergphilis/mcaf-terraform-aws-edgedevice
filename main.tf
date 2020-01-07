@@ -3,7 +3,23 @@ data "aws_iam_policy_document" "default" {
   statement {
     effect = "Allow"
     actions = [
-      "iot:*"
+      "iot:Publish",
+      "iot:Subscribe",
+      "iot:Connect",
+      "iot:Receive",
+      "iot:GetThingShadow",
+      "iot:UpdateThingShadow",
+      "iot:DeleteThingShadow"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "greengrass:*"
     ]
     resources = [
       "*"
