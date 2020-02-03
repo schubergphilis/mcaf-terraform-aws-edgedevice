@@ -19,7 +19,13 @@ data "aws_iam_policy_document" "default" {
   statement {
     effect = "Allow"
     actions = [
-      "greengrass:*"
+      "greengrass:AssumeRoleForGroup",
+      "greengrass:CreateCertificate",
+      "greengrass:GetDeployment",
+      "greengrass:GetDeploymentArtifacts",
+      "greengrass:UpdateCoreDeploymentStatus",
+      "greengrass:GetConnectivityInfo",
+      "greengrass:UpdateConnectivityInfo"
     ]
     resources = [
       "*"
