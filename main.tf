@@ -1,3 +1,9 @@
+locals {
+  create_role            = var.ssm_activation_role_id != null ? 0 : 1
+  iot_policy             = var.iot_policy != null ? var.iot_policy : data.aws_iam_policy_document.default.json
+  ssm_activation_role_id = var.ssm_activation_role_id != null ? var.ssm_activation_role_id : aws_iam_role.ssm_activation[0].id
+}
+
 data "aws_iam_policy_document" "default" {
   version = "2012-10-17"
   statement {
@@ -35,7 +41,7 @@ data "aws_iam_policy_document" "default" {
 
 resource "aws_iot_policy" "default" {
   name   = "IoTCoreFullAccess-${var.name}"
-  policy = data.aws_iam_policy_document.default.json
+  policy = local.iot_policy
 }
 
 resource "aws_iot_thing" "default" {
@@ -100,19 +106,21 @@ data "aws_iam_policy_document" "ssm_activation" {
 }
 
 resource "aws_iam_role" "ssm_activation" {
+  count              = local.create_role
   name               = "SSMActivation-${var.name}"
   assume_role_policy = data.aws_iam_policy_document.ssm_activation.json
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_activation" {
-  role       = aws_iam_role.ssm_activation.name
+  count      = local.create_role
+  role       = aws_iam_role.ssm_activation[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
 }
 
 resource "aws_ssm_activation" "default" {
   name               = var.name
   description        = "SSM Activation for ${var.name}"
-  iam_role           = aws_iam_role.ssm_activation.id
+  iam_role           = local.ssm_activation_role_id
   expiration_date    = timeadd(timestamp(), var.expiration_duration)
   registration_limit = 1
   depends_on         = [aws_iam_role_policy_attachment.ssm_activation]
