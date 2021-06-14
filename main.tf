@@ -63,7 +63,7 @@ resource "aws_iot_thing_principal_attachment" "default" {
 }
 
 module "edgedevice_kms_key" {
-  source      = "github.com/schubergphilis/terraform-aws-mcaf-kms?ref=v0.1.3"
+  source      = "github.com/schubergphilis/terraform-aws-mcaf-kms?ref=v0.1.6"
   name        = var.name
   description = "KMS key used for encrypting SSM Parameters for edge devices"
   tags        = var.tags
@@ -109,6 +109,7 @@ resource "aws_iam_role" "ssm_activation" {
   count              = local.create_role
   name               = "SSMActivation-${var.name}"
   assume_role_policy = data.aws_iam_policy_document.ssm_activation.json
+  tags               = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_activation" {
