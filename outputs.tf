@@ -32,13 +32,3 @@ output "certificate_private_key" {
   value       = aws_ssm_parameter.private_key.name
   description = "Path of the SSM Parameter for IoT certificate private key"
 }
-
-output "kms_key_arn" {
-  value       = module.edgedevice_kms_key.arn
-  description = "KMS key arn used for encrypting SSM Parameters for edge devices"
-}
-
-output "kms_key_id" {
-  value       = module.edgedevice_kms_key.id
-  description = "KMS key id used for encrypting SSM Parameters for edge devices"
-}
