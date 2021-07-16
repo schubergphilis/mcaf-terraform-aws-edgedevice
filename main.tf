@@ -73,7 +73,7 @@ resource "aws_ssm_parameter" "certificate_pem" {
   name   = "/${var.name}/iot/certificate-pem"
   type   = "SecureString"
   value  = aws_iot_certificate.default.certificate_pem
-  key_id = module.edgedevice_kms_key.id
+  key_id = var.kms_key_id != null ? var.kms_key_id : module.edgedevice_kms_key.id
   tags   = var.tags
 }
 
@@ -81,7 +81,7 @@ resource "aws_ssm_parameter" "public_key" {
   name   = "/${var.name}/iot/public-key"
   type   = "SecureString"
   value  = aws_iot_certificate.default.public_key
-  key_id = module.edgedevice_kms_key.id
+  key_id = var.kms_key_id != null ? var.kms_key_id : module.edgedevice_kms_key.id
   tags   = var.tags
 }
 
@@ -89,7 +89,7 @@ resource "aws_ssm_parameter" "private_key" {
   name   = "/${var.name}/iot/private-key"
   type   = "SecureString"
   value  = aws_iot_certificate.default.private_key
-  key_id = module.edgedevice_kms_key.id
+  key_id = var.kms_key_id != null ? var.kms_key_id : module.edgedevice_kms_key.id
   tags   = var.tags
 }
 
@@ -138,6 +138,6 @@ resource "aws_ssm_parameter" "ssm_activation" {
   name   = "/${var.name}/iot/ssm-activation"
   type   = "SecureString"
   value  = aws_ssm_activation.default.activation_code
-  key_id = module.edgedevice_kms_key.id
+  key_id = var.kms_key_id != null ? var.kms_key_id : module.edgedevice_kms_key.id
   tags   = var.tags
 }

@@ -21,6 +21,7 @@
 | tags | A mapping of tags to assign to the SSM Parameter | `map(string)` | n/a | yes |
 | expiration\_duration | The expiration period of the SSM activation, default 4 weeks | `string` | `"672h"` | no |
 | iot\_policy | The policy to attach to the Thing | `string` | `null` | no |
+| kms\_key\_id | The KMS key ID used to encrypt all data | `string` | `null` | no |
 | ssm\_activation\_role\_id | The ID of the role to attach to the SSM activation | `string` | `null` | no |
 
 ## Outputs
