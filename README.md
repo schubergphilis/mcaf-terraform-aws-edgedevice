@@ -34,6 +34,8 @@
 | certificate\_pem | Path of the SSM Parameter for IoT certificate pem |
 | certificate\_private\_key | Path of the SSM Parameter for IoT certificate private key |
 | certificate\_public\_key | Path of the SSM Parameter for IoT certificate public key |
+| kms\_key\_arn | KMS key arn used for encrypting SSM Parameters for edge devices |
+| kms\_key\_id | KMS key id used for encrypting SSM Parameters for edge devices |
 | name | Name of the thing |
 
 <!--- END_TF_DOCS --->
