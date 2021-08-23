@@ -34,6 +34,7 @@
 | certificate\_pem | Path of the SSM Parameter for IoT certificate pem |
 | certificate\_private\_key | Path of the SSM Parameter for IoT certificate private key |
 | certificate\_public\_key | Path of the SSM Parameter for IoT certificate public key |
+| iot\_thing\_arn | ARN of the IOT Thing |
 | name | Name of the thing |
 
 <!--- END_TF_DOCS --->
