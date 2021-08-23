@@ -32,3 +32,8 @@ output "certificate_private_key" {
   value       = aws_ssm_parameter.private_key.name
   description = "Path of the SSM Parameter for IoT certificate private key"
 }
+
+output "iot_thing_arn" {
+  value       = aws_iot_thing.default.arn
+  description = "ARN of the IOT Thing"
+}
