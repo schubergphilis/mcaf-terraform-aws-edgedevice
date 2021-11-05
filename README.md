@@ -12,6 +12,7 @@
 | Name | Version |
 |------|---------|
 | aws | n/a |
+| http | n/a |
 
 ## Inputs
 
