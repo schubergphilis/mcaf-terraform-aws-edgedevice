@@ -40,6 +40,25 @@ jobs:
           tf_actions_subcommand: validate
           tf_actions_comment: true
 
+  terraform-docs:
+    runs-on: ubuntu-latest
+    needs: [terraform-fmt, terraform-sec, terraform-validate]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Update module usage docs and push any changes back to PR branch
+        uses: terraform-docs/gh-actions@v1.0.0
+        with:
+          args: "--sort --sort-by required"
+          working-dir: .
+          output-file: README.md
+          output-method: inject
+          git-push: "true"
+          git-commit-message: 'terraform-docs: Update module usage'
+        continue-on-error: true # added this to prevent a PR from a remote fork failing the workflow
+
   terraform-sec:
     name: tfsec
     runs-on: ubuntu-latest
@@ -47,22 +66,4 @@ jobs:
       - name: Check out code
         uses: actions/checkout@master
       - name: Terraform security scan
-        uses: triat/terraform-security-scan@v3.0.0
-
-  terraform-docs:
-    runs-on: ubuntu-latest
-    needs: [terraform-fmt, terraform-sec, terraform-validate]    
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-      - name: Update module usage docs and push any changes back to PR branch
-        uses: Dirrk/terraform-docs@v1.0.8
-        with:
-          tf_docs_args: '--sort-inputs-by-required'
-          tf_docs_git_commit_message: 'terraform-docs: Update module usage'
-          tf_docs_git_push: 'true'
-          tf_docs_output_file: README.md
-          tf_docs_output_method: inject
-          tf_docs_find_dir: .
+        uses: triat/terraform-security-scan@v3.0.3

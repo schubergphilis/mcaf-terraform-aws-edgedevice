@@ -93,7 +93,7 @@ resource "aws_ssm_parameter" "private_key" {
 resource "aws_ssm_parameter" "root_ca_crt" {
   name   = "/${var.name}/iot/root-ca-crt"
   type   = "SecureString"
-  value  = data.http.root_ca.body
+  value  = data.http.root_ca.response_body
   key_id = var.kms_key_id
   tags   = var.tags
 }
