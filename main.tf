@@ -1,7 +1,6 @@
 locals {
-  create_role            = var.ssm_activation_role_id != null ? 0 : 1
-  iot_policy             = var.iot_policy != null ? var.iot_policy : data.aws_iam_policy_document.default.json
-  ssm_activation_role_id = var.ssm_activation_role_id != null ? var.ssm_activation_role_id : aws_iam_role.ssm_activation[0].id
+  create_role = var.ssm_activation_role_id != null ? 0 : 1
+  iot_policy  = var.iot_policy != null ? var.iot_policy : data.aws_iam_policy_document.default.json
 }
 
 data "aws_iam_policy_document" "default" {
@@ -94,55 +93,6 @@ resource "aws_ssm_parameter" "root_ca_crt" {
   name   = "/${var.name}/iot/root-ca-crt"
   type   = "SecureString"
   value  = data.http.root_ca.response_body
-  key_id = var.kms_key_id
-  tags   = var.tags
-}
-
-data "aws_iam_policy_document" "ssm_activation" {
-  statement {
-    actions = [
-      "sts:AssumeRole"
-    ]
-    principals {
-      type        = "Service"
-      identifiers = ["ssm.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "ssm_activation" {
-  count              = local.create_role
-  name               = "SSMActivation-${var.name}"
-  assume_role_policy = data.aws_iam_policy_document.ssm_activation.json
-  tags               = var.tags
-}
-
-resource "aws_iam_role_policy_attachment" "ssm_activation" {
-  count      = local.create_role
-  role       = aws_iam_role.ssm_activation[0].name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
-}
-
-resource "aws_ssm_activation" "default" {
-  name               = var.name
-  description        = "SSM Activation for ${var.name}"
-  iam_role           = local.ssm_activation_role_id
-  expiration_date    = timeadd(timestamp(), var.expiration_duration)
-  registration_limit = 1
-  depends_on         = [aws_iam_role_policy_attachment.ssm_activation]
-  tags               = var.tags
-
-  lifecycle {
-    ignore_changes = [
-      expiration_date
-    ]
-  }
-}
-
-resource "aws_ssm_parameter" "ssm_activation" {
-  name   = "/${var.name}/iot/ssm-activation"
-  type   = "SecureString"
-  value  = aws_ssm_activation.default.activation_code
   key_id = var.kms_key_id
   tags   = var.tags
 }
