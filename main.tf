@@ -99,7 +99,7 @@ resource "aws_ssm_parameter" "root_ca_crt" {
 }
 
 data "aws_iam_policy_document" "ssm_activation" {
-  count = var.create_ssm_activation == true ? 1 : 0
+  count = local.create_role
 
   statement {
     actions = [
