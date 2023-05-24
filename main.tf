@@ -99,8 +99,6 @@ resource "aws_ssm_parameter" "root_ca_crt" {
 }
 
 data "aws_iam_policy_document" "ssm_activation" {
-  count = local.create_role
-
   statement {
     actions = [
       "sts:AssumeRole"
