@@ -144,7 +144,7 @@ resource "aws_ssm_parameter" "ssm_activation" {
   count  = var.create_ssm_activation == true ? 1 : 0
   name   = "/${var.name}/iot/ssm-activation"
   type   = "SecureString"
-  value  = aws_ssm_activation.default.activation_code
+  value  = aws_ssm_activation.default[0].activation_code
   key_id = var.kms_key_id
   tags   = var.tags
 }
