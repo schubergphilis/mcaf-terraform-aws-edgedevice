@@ -1,5 +1,5 @@
 locals {
-  create_role            = var.ssm_activation_role_id != null ? 0 : 1
+  create_role            = var.ssm_activation_role_id != null || var.create_ssm_activation == false ? 0 : 1
   iot_policy             = var.iot_policy != null ? var.iot_policy : data.aws_iam_policy_document.default.json
   ssm_activation_role_id = var.ssm_activation_role_id != null ? var.ssm_activation_role_id : aws_iam_role.ssm_activation[0].id
 }
@@ -124,6 +124,7 @@ resource "aws_iam_role_policy_attachment" "ssm_activation" {
 }
 
 resource "aws_ssm_activation" "default" {
+  count              = var.create_ssm_activation == true ? 1 : 0
   name               = var.name
   description        = "SSM Activation for ${var.name}"
   iam_role           = local.ssm_activation_role_id
@@ -140,9 +141,10 @@ resource "aws_ssm_activation" "default" {
 }
 
 resource "aws_ssm_parameter" "ssm_activation" {
+  count  = var.create_ssm_activation == true ? 1 : 0
   name   = "/${var.name}/iot/ssm-activation"
   type   = "SecureString"
-  value  = aws_ssm_activation.default.activation_code
+  value  = aws_ssm_activation.default[0].activation_code
   key_id = var.kms_key_id
   tags   = var.tags
 }

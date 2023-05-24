@@ -31,3 +31,9 @@ variable "tags" {
   type        = map(string)
   description = "A mapping of tags to assign to the SSM Parameter"
 }
+
+variable "create_ssm_activation" {
+  type        = bool
+  default     = true
+  description = "The Flag which determines if SSM activation resouces should be created"
+}
