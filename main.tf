@@ -1,7 +1,7 @@
 locals {
   create_role            = var.ssm_activation_role_id != null || var.create_ssm_activation == false ? 0 : 1
   iot_policy             = var.iot_policy != null ? var.iot_policy : data.aws_iam_policy_document.default.json
-  ssm_activation_role_id = var.ssm_activation_role_id != null ? var.ssm_activation_role_id : aws_iam_role.ssm_activation[0].id
+  ssm_activation_role_id = var.ssm_activation_role_id != null ? var.ssm_activation_role_id : aws_iam_role.ssm_activation.id
 }
 
 data "aws_iam_policy_document" "default" {
