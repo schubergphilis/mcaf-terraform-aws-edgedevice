@@ -1,7 +1,7 @@
 locals {
-  create_role            = var.ssm_activation_role_id != null || var.create_ssm_activation == false ? 0 : 1
+  create_role            = var.ssm_activation_role_id != null ? 0 : 1
   iot_policy             = var.iot_policy != null ? var.iot_policy : data.aws_iam_policy_document.default.json
-  ssm_activation_role_id = var.ssm_activation_role_id != null ? var.ssm_activation_role_id : aws_iam_role.ssm_activation[0].id
+  ssm_activation_role_id = var.create_ssm_activation ? aws_iam_role.ssm_activation[0].id : null
 }
 
 data "aws_iam_policy_document" "default" {
@@ -124,10 +124,10 @@ resource "aws_iam_role_policy_attachment" "ssm_activation" {
 }
 
 resource "aws_ssm_activation" "default" {
-  count              = var.create_ssm_activation == true ? 1 : 0
+  count              = var.create_ssm_activation ? 1 : 0
   name               = var.name
   description        = "SSM Activation for ${var.name}"
-  iam_role           = local.ssm_activation_role_id
+  iam_role           = var.ssm_activation_role_id != null ? var.ssm_activation_role_id : local.ssm_activation_role_id
   expiration_date    = timeadd(timestamp(), var.expiration_duration)
   registration_limit = 1
   depends_on         = [aws_iam_role_policy_attachment.ssm_activation]
@@ -141,7 +141,7 @@ resource "aws_ssm_activation" "default" {
 }
 
 resource "aws_ssm_parameter" "ssm_activation" {
-  count  = var.create_ssm_activation == true ? 1 : 0
+  count  = var.create_ssm_activation ? 1 : 0
   name   = "/${var.name}/iot/ssm-activation"
   type   = "SecureString"
   value  = aws_ssm_activation.default[0].activation_code
