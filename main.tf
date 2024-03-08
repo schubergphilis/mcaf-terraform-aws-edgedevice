@@ -42,6 +42,7 @@ data "aws_iam_policy_document" "default" {
 resource "aws_iot_policy" "default" {
   name   = "IoTCoreFullAccess-${var.name}"
   policy = local.iot_policy
+  tags   = var.tags
 }
 
 resource "aws_iot_thing" "default" {
